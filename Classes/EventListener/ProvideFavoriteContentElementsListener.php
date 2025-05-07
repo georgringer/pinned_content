@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace GeorgRinger\FavoriteContent\EventListener;
 
-use Doctrine\DBAL\ParameterType;
 use GeorgRinger\FavoriteContent\Enum\EnumType;
+use GeorgRinger\FavoriteContent\Repository\FavoriteRepository;
 use TYPO3\CMS\Backend\Controller\Event\ModifyNewContentElementWizardItemsEvent;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -19,6 +18,7 @@ final class ProvideFavoriteContentElementsListener
 {
     public function __construct(
         private UriBuilder $uriBuilder,
+        private FavoriteRepository $favoriteRepository,
     ) {}
 
     protected string $returnUrl = '';
@@ -38,7 +38,7 @@ final class ProvideFavoriteContentElementsListener
                 continue;
             }
             $items['favorite' . $enum->name] = [
-                'header' => '❤️ Favorites  [' . $enum->name . ']',
+                'header' => '❤️ Personal  [' . $enum->name . ']',
             ];
             $items += $groupedItems;
         }
@@ -49,36 +49,29 @@ final class ProvideFavoriteContentElementsListener
     private function getGroupedFavorites(ModifyNewContentElementWizardItemsEvent $event): array
     {
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_favorite_content_item');
-        $rows = $queryBuilder
-            ->select('*')
-            ->from('tx_favorite_content_item')
-            ->where(
-                $queryBuilder->expr()->eq('cruser', $queryBuilder->createNamedParameter($GLOBALS['BE_USER']->user['uid'], ParameterType::INTEGER)),
-            )
-            ->orderBy('sorting')
-            ->executeQuery()
-            ->fetchAllAssociative();
+        $rows = $this->favoriteRepository->getAllOfCurrentUser();
 
         if (!$rows) {
             return [];
         }
         $items = [];
         foreach ($rows as $row) {
-            $fakeContentRow = [
-                'CType' => $row['content_type'],
-            ];
             $config = [
                 'title' => $row['name'],
                 'description' => $row['description'],
-                'iconIdentifier' => $iconFactory->mapRecordTypeToIconIdentifier('tt_content', $fakeContentRow),
                 'defaultValues' => [
                     'CType' => $row['content_type'],
                     '_favorite' => $row['uid'],
                 ],
             ];
-            switch ($row['type']) {
-                case EnumType::Copy->value:
+            $type = EnumType::tryFrom($row['type']);
+            if ($type === null) {
+                continue;
+            }
+
+            switch ($type) {
+                case EnumType::Copy:
+                case EnumType::Favorite:
                     if (!$row['record']) {
                         continue 2;
                     }
@@ -91,16 +84,29 @@ final class ProvideFavoriteContentElementsListener
                         ],
                         'redirect' => $this->returnUrl,
                     ]);
-                    $config['title'] .= sprintf(' | %s', BackendUtility::getRecordTitle('tt_content', BackendUtility::getRecord('tt_content', $row['record'])));
+                    $originalRow = BackendUtility::getRecord('tt_content', $row['record']);
+                    $config['iconIdentifier'] = $iconFactory->mapRecordTypeToIconIdentifier('tt_content', $originalRow);
+
+                    if ($row['direct']) {
+                        $config['title'] = BackendUtility::getRecordTitle('tt_content', $originalRow) . ' | ' . BackendUtility::getProcessedValue('tt_content', 'CType', $originalRow['CType']);
+                        $config['description'] = BackendUtility::getRecordPath($originalRow['pid'], '', 0, false);
+                    } else {
+                        $config['title'] .= sprintf(' | %s', BackendUtility::getRecordTitle('tt_content', $originalRow));
+                    }
                     break;
-                case EnumType::New->value:
+                case EnumType::New:
+                    $fakeContentRow = [
+                        'CType' => $row['content_type'],
+                    ];
                     $config['saveAndClose'] = $row['save_and_close'];
+                    $config['iconIdentifier'] = $iconFactory->mapRecordTypeToIconIdentifier('tt_content', $fakeContentRow);
                     $config['title'] .= sprintf(' | %s', BackendUtility::getProcessedValue('tt_content', 'CType', $row['content_type']));
                     break;
             }
 
-            $identifier = 'favorite' . EnumType::Copy->name . '_' . $row['uid'];
-            $items[$row['type']][$identifier] = $config;
+            $groupIdentifier = $row['direct'] ? EnumType::Favorite->value : $type->value;
+            $identifier = 'favorite' . $groupIdentifier . '_' . $row['uid'];
+            $items[$groupIdentifier][$identifier] = $config;
         }
 
         return $items;

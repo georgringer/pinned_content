@@ -15,12 +15,29 @@ use TYPO3\CMS\Core\Utility\StringUtility;
 class FavoriteRepository
 {
 
+    private const TABLE = 'tx_favorite_content_item';
+
+    public function getAllOfCurrentUser(): array
+    {
+        $queryBuilder = $this->getConnection()->createQueryBuilder();
+        return $queryBuilder
+            ->select('*')
+            ->from(self::TABLE)
+            ->where(
+                $queryBuilder->expr()->eq('hidden', $queryBuilder->createNamedParameter(0, ParameterType::INTEGER)),
+                $queryBuilder->expr()->eq('cruser', $queryBuilder->createNamedParameter($this->getBackendUserId(), ParameterType::INTEGER)),
+            )
+            ->orderBy('sorting')
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
+
     public function getByUid(int $id): ?array
     {
         $queryBuilder = $this->getConnection()->createQueryBuilder();
         $row = $queryBuilder
             ->select('*')
-            ->from('tx_favorite_content_item')
+            ->from(self::TABLE)
             ->where(
                 $queryBuilder->expr()->eq('direct', $queryBuilder->createNamedParameter(1, ParameterType::INTEGER)),
                 $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(EnumType::Copy->value, ParameterType::INTEGER)),
@@ -47,9 +64,7 @@ class FavoriteRepository
         }
 
         $cmd = [];
-        $data['tx_favorite_content_item'][StringUtility::getUniqueId('NEW')] = [
-//            'title' => 'The page title',
-//            'subtitle' => 'Other title stuff',
+        $data[self::TABLE][StringUtility::getUniqueId('NEW')] = [
             'pid' => $record['pid'],
             'direct' => 1,
             'record' => $id,
@@ -63,7 +78,7 @@ class FavoriteRepository
     {
         /** @var DataHandler $dataHandler */
         $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-        $cmd['tx_favorite_content_item'][$id]['delete'] = 1;
+        $cmd[self::TABLE][$id]['delete'] = 1;
         $dataHandler->start([], $cmd);
         $dataHandler->process_datamap();
         $dataHandler->process_cmdmap();
@@ -76,7 +91,7 @@ class FavoriteRepository
 
     private function getConnection(): Connection
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_favorite_content_item');
+        return GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(self::TABLE);
     }
 
 }

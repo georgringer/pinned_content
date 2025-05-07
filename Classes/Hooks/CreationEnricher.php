@@ -15,10 +15,6 @@ class CreationEnricher
         if ($table !== 'tx_favorite_content_item') {
             return;
         }
-//        // Existing record, nothing to change
-//        if (MathUtility::canBeInterpretedAsInteger($id)) {
-//            return;
-//        }
         if (isset($incomingFieldArray['cruser'])) {
             return;
         }

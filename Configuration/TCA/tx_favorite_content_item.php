@@ -26,16 +26,27 @@ return [
     ],
     'types' => [
         \GeorgRinger\FavoriteContent\Enum\EnumType::New->value => [
-            'showitem' => '--palette--;;paletteGeneral,--palette--;;paletteNew',
+            'showitem' => '
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                   --palette--;;paletteGeneral,--palette--;;paletteNew,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+                    hidden,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
+          ',
         ],
         \GeorgRinger\FavoriteContent\Enum\EnumType::Copy->value => [
-            'showitem' => '--palette--;;paletteGeneral,--palette--;;paletteCopy',
+            'showitem' => '
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                    --palette--;;paletteGeneral,--palette--;;paletteCopy,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+                    hidden,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
+            ',
         ],
     ],
     'palettes' => [
         'paletteGeneral' => [
-            'label' => 'Base Data',
-            'showitem' => 'type,--linebreak--,name,description',
+            'showitem' => 'type,--linebreak--,name,--linebreak--,description',
         ],
         'paletteNew' => [
             'label' => 'Configuration',

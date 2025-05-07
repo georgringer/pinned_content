@@ -59,7 +59,7 @@ final class ButtonBarEventListener
             ->setHref('#');
 
         $buttons = $event->getButtons();
-        $buttons[ButtonBar::BUTTON_POSITION_RIGHT][1744100155][] = $button;
+        $buttons[ButtonBar::BUTTON_POSITION_RIGHT][2][] = $button;
         $event->setButtons($buttons);
     }
 
