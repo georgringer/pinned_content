@@ -6,7 +6,7 @@ namespace GeorgRinger\FavoriteContent\Enum;
 
 enum EnumType: int
 {
-    case New = 1;
-    case Copy = 2;
-    case Favorite = 3;
+    case New = 0;
+    case Copy = 1;
+    case Favorite = 2;
 }

@@ -23,7 +23,6 @@ final class ButtonBarEventListener
         private readonly IconFactory $iconFactory,
         private readonly FavoriteRepository $favoriteRepository,
         private readonly PageRenderer $pageRenderer,
-        private readonly UriBuilder $uriBuilder,
     ) {}
 
     public function __invoke(ModifyButtonBarEvent $event): void

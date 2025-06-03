@@ -17,6 +17,7 @@ return [
         'type' => 'type',
         'typeicon_column' => 'type',
         'typeicon_classes' => [
+            'default' => 'extension-favorite-type-new',
             \GeorgRinger\FavoriteContent\Enum\EnumType::New->value => 'extension-favorite-type-new',
             \GeorgRinger\FavoriteContent\Enum\EnumType::Copy->value => 'extension-favorite-type-copy',
         ],

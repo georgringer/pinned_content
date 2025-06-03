@@ -1,6 +1,5 @@
 <?php
 
-
 return [
     'favoriteelement_toggle' => [
         'path' => '/favoriteelement/toggle',

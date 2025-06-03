@@ -14,7 +14,6 @@ use TYPO3\CMS\Core\Utility\StringUtility;
 
 class FavoriteRepository
 {
-
     private const TABLE = 'tx_favorite_content_item';
 
     public function getAllOfCurrentUser(): array
@@ -53,7 +52,7 @@ class FavoriteRepository
         return $row;
     }
 
-    public function add(int $id)
+    public function add(int $id): void
     {
         /** @var DataHandler $dataHandler */
         $dataHandler = GeneralUtility::makeInstance(DataHandler::class);

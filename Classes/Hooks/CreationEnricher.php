@@ -9,9 +9,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 
 class CreationEnricher
 {
-    public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, string $table, $id, DataHandler $dataHandler)
+    public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, string $table, $id, DataHandler $dataHandler): void
     {
-        // Not within sys_note
+        // Not within favorite
         if ($table !== 'tx_favorite_content_item') {
             return;
         }
