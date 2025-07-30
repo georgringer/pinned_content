@@ -4,6 +4,6 @@ services:
     autoconfigure: true
     public: false
 
-  GeorgRinger\FavoriteContent\:
+  GeorgRinger\PinnedContent\:
     resource: '../Classes/*'
 

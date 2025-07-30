@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace GeorgRinger\FavoriteContent\Enum;
+namespace GeorgRinger\PinnedContent\Enum;
 
 enum EnumType: int
 {
     case New = 0;
-    case Copy = 1;
-    case Favorite = 2;
+    case Template = 1;
+    case Pinned = 2;
 }

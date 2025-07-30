@@ -2,7 +2,7 @@
 
 return [
     'ctrl' => [
-        'title' => 'Favorite Content Item',
+        'title' => 'Pinned Content Item',
         'label' => 'name',
         'label_alt' => 'type',
         'label_alt_force' => true,
@@ -17,16 +17,16 @@ return [
         'type' => 'type',
         'typeicon_column' => 'type',
         'typeicon_classes' => [
-            'default' => 'extension-favorite-type-new',
-            \GeorgRinger\FavoriteContent\Enum\EnumType::New->value => 'extension-favorite-type-new',
-            \GeorgRinger\FavoriteContent\Enum\EnumType::Copy->value => 'extension-favorite-type-copy',
+            'default' => 'extension-pinned-type-new',
+            \GeorgRinger\PinnedContent\Enum\EnumType::New->value => 'extension-pinned-type-new',
+            \GeorgRinger\PinnedContent\Enum\EnumType::Template->value => 'extension-pinned-type-copy',
         ],
         'security' => [
             'ignorePageTypeRestriction' => true,
         ],
     ],
     'types' => [
-        \GeorgRinger\FavoriteContent\Enum\EnumType::New->value => [
+        \GeorgRinger\PinnedContent\Enum\EnumType::New->value => [
             'showitem' => '
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
                    --palette--;;paletteGeneral,--palette--;;paletteNew,
@@ -35,7 +35,7 @@ return [
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
           ',
         ],
-        \GeorgRinger\FavoriteContent\Enum\EnumType::Copy->value => [
+        \GeorgRinger\PinnedContent\Enum\EnumType::Template->value => [
             'showitem' => '
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
                     --palette--;;paletteGeneral,--palette--;;paletteCopy,
@@ -69,13 +69,13 @@ return [
             ],
         ],
         'type' => [
-            'label' => 'Type',
+            'label' => 'LLL:EXT:pinned_content/Resources/Private/Language/locallang.xlf:tx_pinned_content_item.type',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['value' => \GeorgRinger\FavoriteContent\Enum\EnumType::New->value, 'label' => 'New', 'icon' => 'extension-favorite-type-new'],
-                    ['value' => \GeorgRinger\FavoriteContent\Enum\EnumType::Copy->value, 'label' => 'Copy', 'icon' => 'extension-favorite-type-copy'],
+                    ['value' => \GeorgRinger\PinnedContent\Enum\EnumType::New->value, 'label' => 'LLL:EXT:pinned_content/Resources/Private/Language/locallang.xlf:tx_pinned_content_item.type.new', 'icon' => 'extension-pinned-type-new'],
+                    ['value' => \GeorgRinger\PinnedContent\Enum\EnumType::Template->value, 'label' => 'LLL:EXT:pinned_content/Resources/Private/Language/locallang.xlf:tx_pinned_content_item.type.template', 'icon' => 'extension-pinned-type-copy'],
                 ],
                 'maxitems' => 1,
             ],

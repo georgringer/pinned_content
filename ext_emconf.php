@@ -1,7 +1,7 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'Favorite Content',
+    'title' => 'Pinned Content',
     'description' => '',
     'category' => 'be',
     'author' => 'Georg Ringer',

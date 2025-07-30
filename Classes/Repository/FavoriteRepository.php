@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace GeorgRinger\FavoriteContent\Repository;
+namespace GeorgRinger\PinnedContent\Repository;
 
 use Doctrine\DBAL\ParameterType;
-use GeorgRinger\FavoriteContent\Enum\EnumType;
+use GeorgRinger\PinnedContent\Enum\EnumType;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -14,7 +14,7 @@ use TYPO3\CMS\Core\Utility\StringUtility;
 
 class FavoriteRepository
 {
-    private const TABLE = 'tx_favorite_content_item';
+    private const TABLE = 'tx_pinned_content_item';
 
     public function getAllOfCurrentUser(): array
     {
@@ -39,7 +39,7 @@ class FavoriteRepository
             ->from(self::TABLE)
             ->where(
                 $queryBuilder->expr()->eq('direct', $queryBuilder->createNamedParameter(1, ParameterType::INTEGER)),
-                $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(EnumType::Copy->value, ParameterType::INTEGER)),
+                $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(EnumType::Template->value, ParameterType::INTEGER)),
                 $queryBuilder->expr()->eq('cruser', $queryBuilder->createNamedParameter($this->getBackendUserId(), ParameterType::INTEGER)),
                 $queryBuilder->expr()->eq('record', $queryBuilder->createNamedParameter($id, ParameterType::INTEGER))
             )
@@ -67,7 +67,7 @@ class FavoriteRepository
             'pid' => $record['pid'],
             'direct' => 1,
             'record' => $id,
-            'type' => EnumType::Copy->value,
+            'type' => EnumType::Template->value,
         ];
         $dataHandler->start($data, $cmd);
         $dataHandler->process_datamap();

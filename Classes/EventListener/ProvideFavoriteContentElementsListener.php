@@ -2,33 +2,35 @@
 
 declare(strict_types=1);
 
-namespace GeorgRinger\FavoriteContent\EventListener;
+namespace GeorgRinger\PinnedContent\EventListener;
 
-use GeorgRinger\FavoriteContent\Enum\EnumType;
-use GeorgRinger\FavoriteContent\Repository\FavoriteRepository;
+use GeorgRinger\PinnedContent\Enum\EnumType;
+use GeorgRinger\PinnedContent\Repository\FavoriteRepository;
 use TYPO3\CMS\Backend\Controller\Event\ModifyNewContentElementWizardItemsEvent;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-#[AsEventListener()]
-final class ProvideFavoriteContentElementsListener
+#[AsEventListener]
+readonly final class ProvideFavoriteContentElementsListener
 {
     public function __construct(
         private UriBuilder $uriBuilder,
         private FavoriteRepository $favoriteRepository,
     ) {}
 
-    protected string $returnUrl = '';
+    protected string $returnUrl;
 
-    public function __invoke(ModifyNewContentElementWizardItemsEvent $event)
+    public function __invoke(ModifyNewContentElementWizardItemsEvent $event): void
     {
         $items = $event->getWizardItems();
         $request = $GLOBALS['TYPO3_REQUEST'];
         $parsedBody = $request->getParsedBody();
         $queryParams = $request->getQueryParams();
+        $languageService = $this->getLanguageService();
         $this->returnUrl = GeneralUtility::sanitizeLocalUrl($parsedBody['returnUrl'] ?? $queryParams['returnUrl'] ?? '');
 
         $groupedFavorites = $this->getGroupedFavorites($event);
@@ -38,13 +40,12 @@ final class ProvideFavoriteContentElementsListener
                 continue;
             }
             $items['favorite' . $enum->name] = [
-                'header' => '❤️ Personal  [' . $enum->name . ']',
+                'header' => '📌️ Pinned  [' . $languageService->sL(sprintf('LLL:EXT:pinned_content/Resources/Private/Language/locallang.xlf:tx_pinned_content_item.type.%s', strtolower($enum->name))) . ']',
             ];
             $items += $groupedItems;
         }
         $event->setWizardItems($items);
     }
-
 
     private function getGroupedFavorites(ModifyNewContentElementWizardItemsEvent $event): array
     {
@@ -70,8 +71,8 @@ final class ProvideFavoriteContentElementsListener
             }
 
             switch ($type) {
-                case EnumType::Copy:
-                case EnumType::Favorite:
+                case EnumType::Template:
+                case EnumType::Pinned:
                     if (!$row['record']) {
                         continue 2;
                     }
@@ -104,12 +105,17 @@ final class ProvideFavoriteContentElementsListener
                     break;
             }
 
-            $groupIdentifier = $row['direct'] ? EnumType::Favorite->value : $type->value;
+            $groupIdentifier = $row['direct'] ? EnumType::Pinned->value : $type->value;
             $identifier = 'favorite' . $groupIdentifier . '_' . $row['uid'];
             $items[$groupIdentifier][$identifier] = $config;
         }
 
         return $items;
+    }
+
+    protected function getLanguageService(): LanguageService
+    {
+        return $GLOBALS['LANG'];
     }
 
 }

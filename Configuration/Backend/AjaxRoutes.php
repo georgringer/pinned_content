@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'favoriteelement_toggle' => [
-        'path' => '/favoriteelement/toggle',
-        'target' => \GeorgRinger\FavoriteContent\Controller\AjaxController::class . '::toggleAction',
+    'pinnedelement_toggle' => [
+        'path' => '/pinnedelement/toggle',
+        'target' => \GeorgRinger\PinnedContent\Controller\AjaxController::class . '::toggleAction',
     ],
 ];

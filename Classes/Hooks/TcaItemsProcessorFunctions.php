@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace GeorgRinger\FavoriteContent\Hooks;
+namespace GeorgRinger\PinnedContent\Hooks;
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Schema\Struct\SelectItem;

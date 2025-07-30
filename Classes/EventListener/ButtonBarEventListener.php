@@ -2,27 +2,24 @@
 
 declare(strict_types=1);
 
-namespace GeorgRinger\FavoriteContent\EventListener;
+namespace GeorgRinger\PinnedContent\EventListener;
 
-use GeorgRinger\FavoriteContent\Repository\FavoriteRepository;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
+use GeorgRinger\PinnedContent\Repository\FavoriteRepository;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\Components\ModifyButtonBarEvent;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
-#[AsEventListener()]
-final class ButtonBarEventListener
+#[AsEventListener]
+readonly final class ButtonBarEventListener
 {
     public function __construct(
-        private readonly IconFactory $iconFactory,
-        private readonly FavoriteRepository $favoriteRepository,
-        private readonly PageRenderer $pageRenderer,
+        private IconFactory $iconFactory,
+        private FavoriteRepository $favoriteRepository,
+        private PageRenderer $pageRenderer,
     ) {}
 
     public function __invoke(ModifyButtonBarEvent $event): void
@@ -43,18 +40,17 @@ final class ButtonBarEventListener
             return;
         }
 
-        $this->pageRenderer->loadJavaScriptModule('@georgringer/favorite-content/toggle.js');
+        $this->pageRenderer->loadJavaScriptModule('@georgringer/pinned-content/toggle.js');
 
 
         $row = $this->favoriteRepository->getByUid($recordId);
 
         $button = $event->getButtonBar()->makeLinkButton();
         $button
-            ->setTitle('Favorite')
-            ->setClasses('favorite-js')
-            ->setDataAttributes(['favorite' => $recordId])
+            ->setTitle('Pinned')
+            ->setDataAttributes(['pinned-button' => 1, 'pinned-content-id' => $recordId])
             ->setShowLabelText(true)
-            ->setIcon($this->iconFactory->getIcon($row ? 'content-heart' : 'actions-heart', IconSize::SMALL))
+            ->setIcon($this->iconFactory->getIcon($row ? 'extension-pinned-pin-filled' : 'extension-pinned-pin', IconSize::SMALL))
             ->setHref('#');
 
         $buttons = $event->getButtons();
