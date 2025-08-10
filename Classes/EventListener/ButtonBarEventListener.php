@@ -8,6 +8,7 @@ use GeorgRinger\PinnedContent\Repository\FavoriteRepository;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\Components\ModifyButtonBarEvent;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
@@ -40,6 +41,10 @@ readonly final class ButtonBarEventListener
             return;
         }
 
+        if (!$this->userHasWriteAccess()) {
+            return;
+        }
+
         $this->pageRenderer->loadJavaScriptModule('@georgringer/pinned-content/toggle.js');
 
 
@@ -56,6 +61,17 @@ readonly final class ButtonBarEventListener
         $buttons = $event->getButtons();
         $buttons[ButtonBar::BUTTON_POSITION_RIGHT][2][] = $button;
         $event->setButtons($buttons);
+    }
+
+
+    private function userHasWriteAccess(): bool
+    {
+        return $this->getBackendUser()->check('tables_modify', 'tx_favorite_content_item');
+    }
+
+    private function getBackendUser(): BackendUserAuthentication
+    {
+        return $GLOBALS['BE_USER'];
     }
 
     private function getRequest(): ServerRequest
