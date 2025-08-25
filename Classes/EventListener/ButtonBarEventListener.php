@@ -66,7 +66,7 @@ readonly final class ButtonBarEventListener
 
     private function userHasWriteAccess(): bool
     {
-        return $this->getBackendUser()->check('tables_modify', 'tx_favorite_content_item');
+        return $this->getBackendUser()->check('tables_modify', 'tx_pinned_content_item');
     }
 
     private function getBackendUser(): BackendUserAuthentication

@@ -40,7 +40,7 @@ readonly final class ProvideFavoriteContentElementsListener
                 continue;
             }
             $items['favorite' . $enum->name] = [
-                'header' => $languageService->sL(sprintf('LLL:EXT:favorite_content/Resources/Private/Language/locallang.xlf:wizard.header.%s', strtolower($enum->name))),
+                'header' => $languageService->sL(sprintf('LLL:EXT:pinned_content/Resources/Private/Language/locallang.xlf:wizard.header.%s', strtolower($enum->name))),
             ];
             $items += $groupedItems;
         }

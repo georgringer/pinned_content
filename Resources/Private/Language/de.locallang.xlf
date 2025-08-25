@@ -1,34 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file source-language="en" original="EXT:pinned_content/Resources/Private/Language/locallang.xlf" datatype="plaintext" product-name="pinned_content" date="2025-08-25T15:57:28+02:00">
-		<header></header>
+	<file source-language="en" target-language="de" original="" datatype="plaintext" date="2025-08-25T15:57:28+02:00">
 		<body>
 			<trans-unit id="tx_pinned_content_item.type">
 				<source>Type</source>
+				<target>Typ</target>
 			</trans-unit>
 			<trans-unit id="tx_pinned_content_item.type.new">
 				<source>New</source>
+				<target>Neu</target>
 			</trans-unit>
 			<trans-unit id="tx_pinned_content_item.type.template">
 				<source>Template</source>
+				<target>Template</target>
 			</trans-unit>
 			<trans-unit id="tx_pinned_content_item.type.pinned">
 				<source>Personal pin list</source>
+				<target>Persönliche Pin-Liste</target>
 			</trans-unit>
 			<trans-unit id="confirmation.add">
 				<source>Added to personal pinned list!</source>
+				<target>Zur persönlichen Pin-Liste hinzugefügt</target>
 			</trans-unit>
 			<trans-unit id="confirmation.remove">
 				<source>Removed from personal pinned list!</source>
+				<target>Von der persönlichen Pin-Liste entfernt</target>
 			</trans-unit>
 			<trans-unit id="wizard.header.template">
 				<source>📌 Template</source>
+				<target>📌 Template</target>
 			</trans-unit>
 			<trans-unit id="wizard.header.new">
 				<source>📌 New</source>
+				<target>📌 Neu</target>
 			</trans-unit>
 			<trans-unit id="wizard.header.pinned">
 				<source>📌 Personal pin list</source>
+				<target>📌 Persönliche Pin-Liste</target>
 			</trans-unit>
 		</body>
 	</file>
