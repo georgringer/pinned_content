@@ -2,7 +2,7 @@
 
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Pinned Content',
-    'description' => '',
+    'description' => 'Enhances the TYPO3 content element wizard with pinned items, templates, and personal pin lists for faster editing.',
     'category' => 'be',
     'author' => 'Georg Ringer',
     'author_email' => 'mail@ringer.it',

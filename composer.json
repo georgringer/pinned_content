@@ -1,0 +1,35 @@
+{
+	"name": "georgringer/pinned-content",
+	"description": "Enhances the TYPO3 content element wizard with pinned items, templates, and personal pin lists for faster editing.",
+	"license": "GPL-2.0-or-later",
+	"type": "typo3-cms-extension",
+	"keywords": [
+		"TYPO3",
+		"extension"
+	],
+	"authors": [
+		{
+			"name": "Georg Ringer",
+			"homepage": "https://ringer.it",
+			"role": "Developer"
+		}
+	],
+	"homepage": "https://github.com/georgringer/pinned_content",
+	"support": {
+		"issues": "https://github.com/georgringer/pinned_content/issues",
+		"source": "https://github.com/georgringer/pinned_content"
+	},
+	"require": {
+		"typo3/cms-backend": "^13.4.15"
+	},
+	"autoload": {
+		"psr-4": {
+			"GeorgRinger\\PinnedContent\\": "Classes"
+		}
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "pinned_content"
+		}
+	}
+}
