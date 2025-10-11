@@ -50,3 +50,11 @@ The extension provides **three modes** for working with pinned content:
 ⭐ Provides quick access to frequently used content elements.
 
 
+
+## ⚙️ User settings
+
+You can choose where the pinned groups appear in the Content Element Wizard.
+
+- Open your User menu → User settings → Pinned Content
+- Position in wizard: Top or Bottom
+- Default: Bottom
