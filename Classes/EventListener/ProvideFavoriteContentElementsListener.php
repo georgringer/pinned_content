@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace GeorgRinger\PinnedContent\EventListener;
 
+use GeorgRinger\PinnedContent\Enum\EnumPosition;
 use GeorgRinger\PinnedContent\Enum\EnumType;
 use GeorgRinger\PinnedContent\Repository\FavoriteRepository;
 use TYPO3\CMS\Backend\Controller\Event\ModifyNewContentElementWizardItemsEvent;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -33,18 +35,29 @@ readonly final class ProvideFavoriteContentElementsListener
         $languageService = $this->getLanguageService();
         $this->returnUrl = GeneralUtility::sanitizeLocalUrl($parsedBody['returnUrl'] ?? $queryParams['returnUrl'] ?? '');
 
+        $position = $this->getWizardPositionFromUserSettings();
+        $reorderedWizardItems = $items;
+        if ($this->getWizardPositionFromUserSettings() === EnumPosition::Top->value) {
+            $reorderedWizardItems = [];
+        }
+
         $groupedFavorites = $this->getGroupedFavorites($event);
         foreach ($groupedFavorites as $type => $groupedItems) {
             $enum = EnumType::tryFrom($type);
             if ($enum === null) {
                 continue;
             }
-            $items['favorite' . $enum->name] = [
+            $reorderedWizardItems['favorite' . $enum->name] = [
                 'header' => $languageService->sL(sprintf('LLL:EXT:pinned_content/Resources/Private/Language/locallang.xlf:wizard.header.%s', strtolower($enum->name))),
             ];
-            $items += $groupedItems;
+            $reorderedWizardItems += $groupedItems;
         }
-        $event->setWizardItems($items);
+
+        if ($position === EnumPosition::Top->value) {
+            $reorderedWizardItems += $items;
+        }
+
+        $event->setWizardItems($reorderedWizardItems);
     }
 
     private function getGroupedFavorites(ModifyNewContentElementWizardItemsEvent $event): array
@@ -118,4 +131,25 @@ readonly final class ProvideFavoriteContentElementsListener
         return $GLOBALS['LANG'];
     }
 
+    protected function getWizardPositionFromUserSettings(): string
+    {
+        $beUser = $this->getBackendUser();
+        $value = EnumPosition::Bottom->value ?? 'bottom';
+
+        if (
+            isset($beUser->uc['pinned_content.wizardPosition'])
+            && in_array($beUser->uc['pinned_content.wizardPosition'], [EnumPosition::Top->value, EnumPosition::Bottom->value], true)
+        ) {
+            $value = $beUser->uc['pinned_content.wizardPosition'];
+        }
+
+        return $value;
+    }
+
+    protected function getBackendUser(): BackendUserAuthentication
+    {
+        /** @var BackendUserAuthentication $beUser */
+        $beUser = $GLOBALS['BE_USER'];
+        return $beUser;
+    }
 }
